@@ -7,13 +7,15 @@ const Footer = () => {
         { name: 'Branch Locations', href: '/branches' },
         { name: 'How it Works', href: '/about' },
     ], 
-    operations:[
+    operations: [
         { name: 'List Your Property', href: '/services/owners' },
         { name: 'List Your Property', href: '/services/owners' },
         { name: 'Lease Terms', href: '/legal/lease-info' },
         { name: 'Area Search', href: '/search' },
     ],
     resources: [
-
+        { name: 'Contact Us', href: '/contact' },
+        { name: 'FAQ', href: '/faq' },
+        
     ]
 };
