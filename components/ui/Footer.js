@@ -11,7 +11,7 @@ const PublicFooter = () => {
         { name: 'How it Works', href: '/about' },
         ],
         services: [
-        { name: 'List Your Property', href: '/services/owners' }, // Complete service for owners 
+        { name: 'List Your Property', href: '/services/owners' }, 
         { name: 'Renter Guide', href: '/services/renters' }, // Includes interviewing and visits 
         { name: 'Lease Terms', href: '/legal/lease-info' }, // Standard 3-month to 1-year terms 
         { name: 'Area Search', href: '/search' },
