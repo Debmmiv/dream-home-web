@@ -10,7 +10,7 @@ const FOOTER_CONFIG = {
             { name: 'Featured Flats', href: '#' },
             { name: 'House Listings', href: '#' },
             { name: 'Branch Locations', href: '#' },
-            { name: 'How it Works', href: '/about' },
+            { name: 'How it Works', href: '#' },
         ],
         },
         {
