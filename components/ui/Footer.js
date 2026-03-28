@@ -25,9 +25,9 @@ const FOOTER_CONFIG = {
         {
         title: 'Support',
         links: [
-            { name: 'Contact Us', href: '/contact' },
-            { name: 'FAQ', href: '/faq' },
-            { name: 'Privacy Policy', href: '/privacy' },
+            { name: 'Contact Us', href: '#' },
+            { name: 'FAQ', href: '#' },
+            { name: 'Privacy Policy', href: '#' },
         ],
         },
     ],
