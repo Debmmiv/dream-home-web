@@ -23,7 +23,18 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      {/* 2. 'flex-col' ensures the footer pushes to the bottom */}
+      <body className="min-h-full flex flex-col">
+        
+        {/* Main content area expands to fill space */}
+        <main className="flex-grow">
+          {children}
+        </main>
+
+        {/* 3. Footer sits at the bottom of the layout */}
+        <PublicFooter />
+        
+      </body>
     </html>
   );
 }
