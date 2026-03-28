@@ -31,7 +31,6 @@ return (
             <div className="space-y-5">
             <div className="text-2xl font-bold text-white tracking-tight">
                 Dream<span className="text-emerald-400">Home</span>
-                <span className="text-slate-500 text-sm ml-1 font-mono">.dev</span>
             </div>
             <p className="text-sm leading-relaxed text-slate-400">
                 Simplifying the rental journey across the United Kingdom. 
