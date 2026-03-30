@@ -4,39 +4,34 @@ import { useState, useEffect } from "react";
 import { AlertTriangle, X } from "lucide-react";
 
 export default function BetaAlert() {
-    const [isVisible, setIsVisible] = useState(false);
-
-useEffect(() => {
-
-    const hasDismissed = localStorage.getItem("dreamhomeBetaDismissed");
     
-    if (!hasDismissed) {
-        setIsVisible(true);
+    const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+
+        if (isVisible) {
         document.body.style.overflow = "hidden";
-    }
+        }
 
 
-    return () => {
+        return () => {
+        document.body.style.overflow = "unset";
+        };
+    }, [isVisible]);
+
+    const handleDismiss = () => {
+
+        setIsVisible(false);
         document.body.style.overflow = "unset";
     };
-}, []);
 
-const handleDismiss = () => {
-    setIsVisible(false);
-    localStorage.setItem("dreamhomeBetaDismissed", "true");
-    document.body.style.overflow = "unset";
-};
+    if (!isVisible) return null;
 
-if (!isVisible) return null;
-
-return (
-    // Backdrop: Darkens and blurs the rest of the site
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
         
-        {/* Dialog Box */}
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300">
             
-            {/* Header */}
             <div className="flex justify-between items-center p-5 border-b border-gray-100">
             <div className="flex items-center space-x-2">
                 <AlertTriangle className="h-5 w-5 text-amber-500" />
@@ -51,7 +46,6 @@ return (
             </button>
             </div>
 
-            {/* Content */}
             <div className="p-6">
             <p className="text-gray-600 text-sm leading-relaxed">
                 Welcome to DreamHome! We're currently in beta. You might encounter a few bugs or unfinished features as we continue to improve the platform for everyone.
@@ -61,7 +55,6 @@ return (
             </p>
             </div>
 
-            {/* Footer / Actions */}
             <div className="p-5 bg-gray-50 border-t border-gray-100 flex justify-end">
             <button
                 onClick={handleDismiss}
