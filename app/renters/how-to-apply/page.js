@@ -6,7 +6,7 @@ export default function HowToApplyPage() {
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-4xl font-extrabold text-[#003580]">Work in progress</h1>
         <p className="text-gray-600 mt-4 text-lg">
-         ...............................................
+        ...............................................
         </p>
         
       </div>
