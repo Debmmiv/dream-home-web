@@ -60,6 +60,8 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
     setError(""); // Clear error when user starts typing
   };
 
+  const router = useRouter();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
