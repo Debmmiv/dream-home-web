@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { X, User, Home } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { registerClient } from "../../lib/authService"; 
+
 
 // Reusable Input Component 
 const FormInput = ({ label, type = "text", name, value, onChange, required = true, ...props }) => (
