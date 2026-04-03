@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LoginDialog from '@/components/ui/LoginDialog';
-import SignupDialog from '@/components/ui/SignupDialog';
+import SignupDialog from '@/components/SignupDialog';
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -37,7 +37,7 @@ const NavBar = () => {
     <>
       <nav className="bg-[#003580] text-white border-b border-blue-900 shadow-md sticky top-0 z-50">
         <div className="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
-          
+
           {/* LEFT SECTION: LOGO */}
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <img src="/DreamHomelogo.png" alt="Logo" className="h-14 w-auto object-contain" />
@@ -46,16 +46,16 @@ const NavBar = () => {
 
           {/* MIDDLE SECTION: DROPDOWN MENUS */}
           <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className={`text-sm font-semibold transition-colors hover:text-blue-200 ${isActive('/') ? 'text-white underline underline-offset-8 decoration-2' : 'text-white/90'}`}
             >
               Home
             </Link>
 
             {menuData.map((menu) => (
-              <div 
-                key={menu.title} 
+              <div
+                key={menu.title}
                 className="relative group py-2"
                 onMouseEnter={() => setActiveDropdown(menu.title)}
                 onMouseLeave={() => setActiveDropdown(null)}
@@ -70,8 +70,8 @@ const NavBar = () => {
                 {/* DROPDOWN BOX */}
                 <div className={`absolute top-full left-0 w-64 bg-white text-[#003580] rounded-xl shadow-2xl py-3 border border-gray-100 transition-all duration-200 z-[60] ${activeDropdown === menu.title ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                   {menu.items.map((item) => (
-                    <Link 
-                      key={item} 
+                    <Link
+                      key={item}
                       href={`${menu.href}/${item.toLowerCase().replace(/\s+/g, '-')}`}
                       className="block px-4 py-2.5 text-sm font-medium hover:bg-blue-50 transition-colors border-l-4 border-transparent hover:border-[#003580]"
                     >
@@ -91,7 +91,7 @@ const NavBar = () => {
             </Link>
 
             {/* Removed <Link> wrapper and added onClick handler */}
-            <button 
+            <button
               onClick={() => setIsLoginOpen(true)}
               className="text-sm font-bold border border-white/40 px-6 py-2 rounded-full hover:bg-white hover:text-[#003580] transition"
             >
@@ -103,22 +103,22 @@ const NavBar = () => {
       </nav>
 
       {/* Mount the dialogs outside the nav structure */}
-      <LoginDialog 
-        isOpen={isLoginOpen} 
-        onClose={() => setIsLoginOpen(false)} 
+      <LoginDialog
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
         onSwitchToSignup={() => {
           setIsLoginOpen(false);
           setIsSignupOpen(true);
-        }} 
+        }}
       />
 
-      <SignupDialog 
-        isOpen={isSignupOpen} 
-        onClose={() => setIsSignupOpen(false)} 
+      <SignupDialog
+        isOpen={isSignupOpen}
+        onClose={() => setIsSignupOpen(false)}
         onSwitchToLogin={() => {
           setIsSignupOpen(false);
           setIsLoginOpen(true);
-        }} 
+        }}
       />
     </>
   );

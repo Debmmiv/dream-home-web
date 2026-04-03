@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { X, User, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { registerClient } from "../../lib/authService"; 
+import { registerClient } from "../lib/authService";
 
 
 // Reusable Input Component 
 const FormInput = ({ label, type = "text", name, value, onChange, required = true, ...props }) => (
-  <div className="w-full">  
+  <div className="w-full">
     <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
     <input
       type={type}
@@ -27,7 +27,7 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  
+
   // Centralized form state for easy API submission
   const [formData, setFormData] = useState({
     firstName: "",
@@ -76,7 +76,7 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
 
       setTimeout(() => {
         const role = activeRole.toLowerCase();
-        
+
         if (role === "renter") {
           router.push("/dashboard/renter");
         } else if (role === "owner") {
@@ -87,14 +87,14 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
 
     } catch (err) {
       setError(err.message);
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300 max-h-[90vh] flex flex-col">
-        
+
         {/* Header */}
         <div className="flex justify-between items-center p-5 border-b border-gray-100 shrink-0">
           <h3 className="font-bold text-gray-900 text-xl">Create an account</h3>
@@ -128,17 +128,17 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
               <FormInput label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
               <FormInput label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
             </div>
-            
+
             <FormInput label="Email address" type="email" name="email" value={formData.email} onChange={handleChange} />
             <FormInput label="Phone Number" type="tel" name="phone" value={formData.phone} onChange={handleChange} />
 
             <div className="grid grid-cols-2 gap-4">
               <div className="w-full">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-                <select 
-                  name="gender" 
-                  value={formData.gender} 
-                  onChange={handleChange} 
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E11553] outline-none transition-all bg-white"
                 >
@@ -168,8 +168,8 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
               </div>
             )}
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isLoading || success}
               className="w-full py-3 bg-[#E11553] hover:bg-[#C11246] text-white font-semibold rounded-lg transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
