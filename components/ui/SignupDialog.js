@@ -71,14 +71,23 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
       await registerClient(formData, activeRole);
       setSuccess(true);
       // After a brief success message, switch to login so they can sign in
+
+      await loginClient(formData.email, formData.password);
+
       setTimeout(() => {
-        setSuccess(false);
-        onSwitchToLogin();
-      }, 2000);
+        const role = activeRole.toLowerCase();
+        
+        if (role === "renter") {
+          router.push("/dashboard/renter");
+        } else if (role === "owner") {
+          router.push("/dashboard/owner");
+        }
+
+      }, 1500);
+
     } catch (err) {
       setError(err.message);
-    } finally {
-      setIsLoading(false);
+      setIsLoading(false); 
     }
   };
 
