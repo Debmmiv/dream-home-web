@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { loginClient } from "../../lib/authService";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 
 // Reusable Input Component (Placeholder prop removed)
