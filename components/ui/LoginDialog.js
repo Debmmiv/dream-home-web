@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { loginClient } from "../../lib/authService";
 
 // Reusable Input Component (Placeholder prop removed)
 const FormInput = ({ label, type = "text", name, value, onChange, required = true }) => (
@@ -23,6 +24,8 @@ export default function LoginDialog({ isOpen, onClose, onSwitchToSignup }) {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
@@ -30,18 +33,34 @@ export default function LoginDialog({ isOpen, onClose, onSwitchToSignup }) {
     return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
 
+  // Reset error when dialog reopens
+  useEffect(() => {
+    if (!isOpen) setError("");
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    setError(""); // Clear error when user starts typing
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Payload ready for Django API token generation (No explicit role attached)
-    const payload = { ...credentials };
-    console.log("Authenticating:", payload);
-    // TODO: Add fetch/axios POST request to Django JWT/Auth endpoint here
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await loginClient(credentials.email, credentials.password);
+      // Tokens are stored in localStorage by loginClient
+      onClose();
+      // Optionally reload to update UI with logged-in state
+      window.location.reload();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -79,8 +98,19 @@ export default function LoginDialog({ isOpen, onClose, onSwitchToSignup }) {
               <a href="#" className="text-sm text-[#E11553] hover:underline">Forgot password?</a>
             </div>
 
-            <button type="submit" className="w-full py-3 bg-[#E11553] hover:bg-[#C11246] text-white font-semibold rounded-lg transition-colors mt-2">
-              Log in
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {error}
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className="w-full py-3 bg-[#E11553] hover:bg-[#C11246] text-white font-semibold rounded-lg transition-colors mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Logging in..." : "Log in"}
             </button>
           </form>
         </div>
@@ -96,4 +126,4 @@ export default function LoginDialog({ isOpen, onClose, onSwitchToSignup }) {
       </div>
     </div>
   );
-}
+}

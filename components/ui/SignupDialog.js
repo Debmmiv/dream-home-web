@@ -22,6 +22,9 @@ const FormInput = ({ label, type = "text", name, value, onChange, required = tru
 
 export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
   const [activeRole, setActiveRole] = useState("renter");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   
   // Centralized form state for easy API submission
   const [formData, setFormData] = useState({
@@ -40,18 +43,39 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
     return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
 
+  // Reset state when dialog opens/closes
+  useEffect(() => {
+    if (!isOpen) {
+      setError("");
+      setSuccess(false);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError(""); // Clear error when user starts typing
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Payload ready for Django API:
-    const payload = { ...formData, role: activeRole.toUpperCase() };
-    console.log("Submitting to API:", payload);
-    // TODO: Add your fetch/axios POST request here
+    setIsLoading(true);
+    setError("");
+
+    try {
+      await registerClient(formData, activeRole);
+      setSuccess(true);
+      // After a brief success message, switch to login so they can sign in
+      setTimeout(() => {
+        setSuccess(false);
+        onSwitchToLogin();
+      }, 2000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -117,8 +141,26 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
 
             <FormInput label="Password" type="password" name="password" placeholder="Min. 8 characters" value={formData.password} onChange={handleChange} />
 
-            <button type="submit" className="w-full py-3 bg-[#E11553] hover:bg-[#C11246] text-white font-semibold rounded-lg transition-colors mt-4">
-              Create {activeRole} account
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {error}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {success && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+                Account created successfully! Redirecting to login...
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              disabled={isLoading || success}
+              className="w-full py-3 bg-[#E11553] hover:bg-[#C11246] text-white font-semibold rounded-lg transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Creating account..." : `Create ${activeRole} account`}
             </button>
           </form>
         </div>
