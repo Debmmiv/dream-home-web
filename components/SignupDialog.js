@@ -1,100 +1,33 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, User, Home } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { registerClient } from "../lib/authService";
-
-
-// Reusable Input Component 
-const FormInput = ({ label, type = "text", name, value, onChange, required = true, ...props }) => (
-  <div className="w-full">
-    <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      required={required}
-      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E11553] outline-none transition-all"
-      {...props}
-    />
-  </div>
-);
+import { X } from "lucide-react";
+import { FormInput } from "./ui/FormInput";
+import { RoleSelector } from "./ui/RoleSelector";
+import { useSignupForm } from "../hooks/useSignupForm";
 
 export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
   const [activeRole, setActiveRole] = useState("renter");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-
-  // Centralized form state for easy API submission
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    gender: "",
-    birthdate: "",
-    password: "",
-  });
+  const { 
+    formData, isLoading, error, success, handleChange, handleSubmit, resetForm 
+  } = useSignupForm(activeRole);
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "unset";
-    return () => { document.body.style.overflow = "unset"; };
-  }, [isOpen]);
-
-  // Reset state when dialog opens/closes
-  useEffect(() => {
-    if (!isOpen) {
-      setError("");
-      setSuccess(false);
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+      resetForm(); 
     }
+    return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError(""); // Clear error when user starts typing
-  };
-
-  const router = useRouter();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-
-    try {
-      await registerClient(formData, activeRole);
-      setSuccess(true);
-      // After a brief success message, switch to login so they can sign in
-
-      await loginClient(formData.email, formData.password);
-
-      setTimeout(() => {
-        const role = activeRole.toLowerCase();
-
-        if (role === "renter") {
-          router.push("/dashboard/renter");
-        } else if (role === "owner") {
-          router.push("/dashboard/owner");
-        }
-
-      }, 1500);
-
-    } catch (err) {
-      setError(err.message);
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300 max-h-[90vh] flex flex-col">
-
+        
         {/* Header */}
         <div className="flex justify-between items-center p-5 border-b border-gray-100 shrink-0">
           <h3 className="font-bold text-gray-900 text-xl">Create an account</h3>
@@ -104,23 +37,7 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
         </div>
 
         <div className="p-6 overflow-y-auto">
-          {/* Role Selector Tabs */}
-          <div className="flex p-1 mb-6 bg-gray-100 rounded-lg">
-            <button
-              type="button"
-              onClick={() => setActiveRole("renter")}
-              className={`flex-1 flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeRole === "renter" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-            >
-              <User className="w-4 h-4 mr-2" /> Renter
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveRole("owner")}
-              className={`flex-1 flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all ${activeRole === "owner" ? "bg-white shadow text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-            >
-              <Home className="w-4 h-4 mr-2" /> Owner
-            </button>
-          </div>
+          <RoleSelector activeRole={activeRole} setActiveRole={setActiveRole} />
 
           {/* Form */}
           <form className="space-y-4" onSubmit={handleSubmit}>
@@ -128,17 +45,17 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
               <FormInput label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
               <FormInput label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
             </div>
-
+            
             <FormInput label="Email address" type="email" name="email" value={formData.email} onChange={handleChange} />
             <FormInput label="Phone Number" type="tel" name="phone" value={formData.phone} onChange={handleChange} />
 
             <div className="grid grid-cols-2 gap-4">
               <div className="w-full">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
+                <select 
+                  name="gender" 
+                  value={formData.gender} 
+                  onChange={handleChange} 
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E11553] outline-none transition-all bg-white"
                 >
@@ -154,22 +71,20 @@ export default function SignupDialog({ isOpen, onClose, onSwitchToLogin }) {
 
             <FormInput label="Password" type="password" name="password" placeholder="Min. 8 characters" value={formData.password} onChange={handleChange} />
 
-            {/* Error Message */}
+            {/* Status Messages */}
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {error}
               </div>
             )}
-
-            {/* Success Message */}
             {success && (
               <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm animate-pulse">
                 Account created! Taking you to your dashboard...
               </div>
             )}
 
-            <button
-              type="submit"
+            <button 
+              type="submit" 
               disabled={isLoading || success}
               className="w-full py-3 bg-[#E11553] hover:bg-[#C11246] text-white font-semibold rounded-lg transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
