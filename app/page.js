@@ -1,6 +1,6 @@
 import PrimarySearchBar from '@/components/ui/SearchBar';
-// 1. Import your new PropertyCard! (Adjust the path if it's inside the 'ui' folder)
 import PropertyCard from '../components/cards/PropertyCard';
+import BlogCard from '../components/cards/BlogCard';
 
 export default function HomePage() {
   
@@ -10,6 +10,36 @@ export default function HomePage() {
     { id: 'PA14', type: 'House', city: 'Aberdeen', street: '16 Holburn', postcode: 'AB1 5XX', noOfRooms: 6, status: 'Available', monthlyRent: 650 },
     { id: 'PL94', type: 'Flat', city: 'London', street: '2 Argyll St', postcode: 'NW2', noOfRooms: 4, status: 'Available', monthlyRent: 1200 },
     { id: 'PG21', type: 'House', city: 'Glasgow', street: '18 Dale Rd', postcode: 'G12', noOfRooms: 5, status: 'Rented', monthlyRent: 600 },
+  ];
+
+  const blogData = [
+    {
+      id: 1,
+      title: "Great Work",
+      content: "Ganahan kaayo ko sa ila website tas ilang customer service kay super fast",
+      rating: 5,
+      authorName: "John Lloyd Canoy",
+      authorRole: "Renter",
+      authorImage: "/PlaceHolderPic.png" // Replace with real profile pic later
+    },
+    {
+      id: 2,
+      title: "Good Job",
+      content: "I have trusted DreamHome with my rental properties for years. DreamHome has always managed my properties professionally and efficiently.",
+      rating: 4,
+      authorName: "Ella Culaste",
+      authorRole: "Property Owner",
+      authorImage: "/PlaceHolderPic.png"
+    },
+    {
+      id: 3,
+      title: "Perfect",
+      content: "Grabi ako aura ani, dali rapod ko makakita og ma rentahan",
+      rating: 5,
+      authorName: "Zach Alfred",
+      authorRole: "Developer",
+      authorImage: "/PlaceHolderPic.png"
+    }
   ];
 
   return (
@@ -39,6 +69,20 @@ export default function HomePage() {
           {/* We loop through the dummy data to generate the cards dynamically! */}
           {dummyProperties.map((prop) => (
               <PropertyCard key={prop.id} property={prop} />
+          ))}
+
+        </div>
+      </section>
+
+      {/* 4. The Updated Blog Section */}
+      <section className="w-full max-w-7xl mx-auto mt-32">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Latest from our Blog</h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          
+          {/* We loop through the blog data to generate the cards dynamically! */}
+          {blogData.map((blog) => (
+              <BlogCard key={blog.id} blog={blog} />
           ))}
 
         </div>
