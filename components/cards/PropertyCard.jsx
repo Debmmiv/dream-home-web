@@ -1,9 +1,15 @@
+"use client";
+
+import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import PropertyDetailDialog from './PropertyDetailDialog';
 
 export default function PropertyCard({ property }) {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     return (
-        <Link href={`/house-listings/${property.id}`} className="block transition-transform hover:scale-105">
+        <>
+        <div onClick={() => setIsDialogOpen(true)} className="block transition-transform hover:scale-105">
         <div className="w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100 cursor-pointer">
             
             {/* Image Section */}
@@ -58,6 +64,12 @@ export default function PropertyCard({ property }) {
             </div>
             </div>
         </div>
-        </Link>
+        </div>
+        <PropertyDetailDialog 
+            property={property} 
+            isOpen={isDialogOpen} 
+            onClose={() => setIsDialogOpen(false)} 
+        />
+        </>
     );
 }
