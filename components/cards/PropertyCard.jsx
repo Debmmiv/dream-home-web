@@ -2,12 +2,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function PropertyCard({ property }) {
+
+
     return (
         <Link href={`/house-listings/${property.id}`} className="block transition-transform hover:scale-105">
         <div className="w-full max-w-sm bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100 cursor-pointer">
             
             {/* Image Section */}
             <div className="relative h-56 w-full">
+                
             <Image 
                 src="/PlaceHolderPic.png" 
                 alt={`Property in ${property.city}`}
