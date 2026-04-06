@@ -16,6 +16,7 @@ export default function WhyChooseUs() {
                 src="/PropertyExample.png" 
                 alt="Modern Luxury Home"
                 fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
                 />
             </div>
