@@ -53,7 +53,7 @@ const NavBar = () => {
               href="/"
               className={`text-sm font-semibold transition-colors hover:text-blue-200 ${isActive('/') ? 'text-white underline underline-offset-8 decoration-2' : 'text-white/90'}`}
             >
-              Home dsadasdasdasadsa
+              Home 
             </Link>
 
             {menuData.map((menu) => (
