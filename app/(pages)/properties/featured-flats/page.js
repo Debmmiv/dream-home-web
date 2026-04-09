@@ -4,19 +4,10 @@ import HorizontalPropertyCard from '@/components/cards/HorizontalPropertyCard';
 import SectionHeader from '@/components/ui/SectionHeader';
 import WhyChooseUs from '@/components/ui/WhyChooseUs';
 import AccordionItem from '@/components/ui/AccordionItem';
-
-const heroProperty = {
-  title: 'Comfortable Villa Green',
-  location: 'London, NW2',
-  price: '£1,200',
-  rooms: 4,
-  bathrooms: 2,
-  status: 'For Sale',
-  tag: 'Featured',
-};
+import HeroPropertyCard from '@/components/cards/HeroPropertyCard';
 
 const agents = [
-  { id: 1, name: 'Ryan Foster',   role: 'Senior Agent',    image: '/PlaceHolderPic.png' },
+  { id: 1, name: 'Ryan Foster', role: 'Senior Agent', image: '/PlaceHolderPic.png' },
   { id: 2, name: 'Sophie Nguyen', role: 'Sales Executive', image: '/PlaceHolderPic.png' },
   { id: 3, name: 'Liam Harrison', role: 'Leasing Manager', image: '/PlaceHolderPic.png' },
 ];
@@ -57,42 +48,7 @@ export default function FeaturedFlatsPage() {
         </div>
 
         {/* Hero Feature Card */}
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl group cursor-pointer">
-          <div className="relative h-[380px] md:h-[480px] w-full">
-            <Image
-              src="/PlaceHolderPic.png"
-              alt={heroProperty.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-700"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-          </div>
-
-          {/* Badges */}
-          <div className="absolute top-6 left-6 flex gap-2">
-            <span className="bg-[#003580] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow">
-              {heroProperty.status}
-            </span>
-            <span className="bg-amber-400 text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full shadow">
-              ★ {heroProperty.tag}
-            </span>
-          </div>
-
-          {/* Bottom info */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-1">{heroProperty.title}</h2>
-              <p className="text-white/75 text-sm">
-                {heroProperty.location} · {heroProperty.rooms} rooms · {heroProperty.bathrooms} bath
-              </p>
-            </div>
-            <div className="shrink-0 text-right">
-              <p className="text-white/60 text-xs">Monthly from</p>
-              <p className="text-2xl font-extrabold text-white">{heroProperty.price}</p>
-            </div>
-          </div>
-        </div>
+        <HeroPropertyCard />
       </section>
 
       {/* 2. EXCLUSIVE AGENTS */}
