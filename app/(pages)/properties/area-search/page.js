@@ -1,9 +1,16 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import SearchBar from '@/components/ui/SearchBar'; 
 import HorizontalPropertyCard from '@/components/cards/HorizontalPropertyCard';
 import AccordionItem from '@/components/ui/AccordionItem';
+import PropertyDialog from '@/components/cards/property/PropertyDialog';
 
 export default function AreaSearchPage() {
+  // State to control the Property Dialog visibility and data
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState(null);
+
   const faqs = [
     {
       question: "How do I schedule a viewing?",
@@ -15,8 +22,40 @@ export default function AreaSearchPage() {
     }
   ];
 
+  // Dummy property data structured to match what PropertyDialog expects
+  const dummyPropertyData = {
+    title: "Modern Flat in City Centre",
+    location: "Glasgow, Scotland",
+    price: "£850/mo",
+    tags: ["Available", "Featured"],
+    images: ["/PlaceHolderPic.png"],
+    agent: {
+      name: "John Doe",
+      title: "Senior Lettings Agent",
+      avatarUrl: "https://i.pravatar.cc/150?img=11",
+    },
+    propertyType: "Flat",
+    yearBuilt: 2018,
+    bathrooms: 1,
+    bedrooms: 2,
+    address: "123 High Street",
+    zip: "G1 1AA",
+    city: "Glasgow",
+    area: "City Centre",
+    description: "A beautiful, modern flat located in the heart of the city. Perfect for professionals looking for a stylish living space with easy access to transport links and local amenities. Features a spacious living area, fully fitted kitchen, and secure entry.",
+    propertyId: "P001",
+    status: "Available",
+    features: ["Central Heating", "Double Glazing", "Fitted Kitchen", "Secure Entry"]
+  };
+
+  // Function to handle opening the dialog
+  const handleOpenDialog = () => {
+    setSelectedProperty(dummyPropertyData);
+    setIsDialogOpen(true);
+  };
+
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen relative">
       
       {/* 1. DATABASE-DRIVEN FILTER HEADER */}
       <section className="border-b border-slate-200 pb-4 pt-2 px-4 sm:px-8 bg-white sticky top-0 z-20 shadow-sm">
@@ -24,30 +63,26 @@ export default function AreaSearchPage() {
           
           <SearchBar />
 
-          {/* Secondary Filter Row: Strictly mapping to PropertyForRent columns */}
+          {/* Secondary Filter Row */}
           <div className="flex flex-col sm:flex-row items-center justify-between w-full mt-6 gap-4 px-2 text-slate-700">
               <div className="flex flex-wrap items-center gap-3">
                 
-                {/* Property Type Filter (Maps to 'type' column) */}
                 <button className="flex items-center gap-2 px-4 py-1.5 border border-slate-200 rounded-md text-sm font-semibold hover:bg-slate-50 transition bg-white">
                   Property Type
                   <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                 </button>
 
-                {/* Price Filter (Maps to 'monthly_rent' column) */}
                 <button className="flex items-center gap-2 px-4 py-1.5 border border-slate-200 rounded-md text-sm font-semibold hover:bg-slate-50 transition bg-white">
                   Price Range
                   <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                 </button>
 
-                {/* Rooms Filter (Maps to 'no_of_rooms' column) */}
                 <button className="flex items-center gap-2 px-4 py-1.5 border border-slate-200 rounded-md text-sm font-semibold hover:bg-slate-50 transition bg-white">
                   Rooms
                   <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                 </button>
               </div>
               
-              {/* Sort by Availability or Rent */}
               <div className="text-sm font-semibold flex items-center gap-2">
                   Sort by: 
                   <span className="text-[#e11d48] cursor-pointer flex items-center hover:underline">
@@ -73,11 +108,14 @@ export default function AreaSearchPage() {
             </h1>
             
             {[1, 2, 3, 4, 5].map((item) => (
-              <HorizontalPropertyCard key={item} />
+              <HorizontalPropertyCard 
+                key={item} 
+                onViewDetails={handleOpenDialog} 
+              />
             ))}
           </div>
 
-          {/* Sticky Map - Offsets below the sticky header */}
+          {/* Sticky Map */}
           <div className="w-full lg:w-[45%] xl:w-[40%] hidden lg:block">
             <div className="sticky top-48 h-[calc(100vh-14rem)] w-full rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-slate-100 flex items-center justify-center relative">
                 <div className="text-center">
@@ -95,7 +133,7 @@ export default function AreaSearchPage() {
         </div>
       </section>
 
-      {/* 3. FAQ SECTION (Using your AccordionItem) */}
+      {/* 3. FAQ SECTION */}
       <section className="max-w-4xl mx-auto px-4 sm:px-8 py-16 border-t border-slate-100 mt-12">
         <h2 className="text-3xl font-bold text-slate-900 mb-6 text-center lg:text-left">
           Rental FAQ
@@ -111,6 +149,13 @@ export default function AreaSearchPage() {
           ))}
         </div>
       </section>
+
+      {/* Render the Property Dialog Modal */}
+      <PropertyDialog 
+        isOpen={isDialogOpen} 
+        onClose={() => setIsDialogOpen(false)} 
+        property={selectedProperty} 
+      />
 
     </div>
   );
