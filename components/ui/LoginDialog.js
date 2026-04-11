@@ -60,11 +60,11 @@ export default function LoginDialog({ isOpen, onClose, onSwitchToSignup }) {
       onClose();
 
       if (userRole === "renter") {
-        router.push("/dashboard/renter");
+        router.push("/profile");
       } else if (userRole === "owner") {
-        router.push("/dashboard/owner");
+        router.push("/profile");
       } else {
-        router.push("/dashboard");
+        router.push("/profile");
       }
     } catch (err) {
       setError(err.message);
