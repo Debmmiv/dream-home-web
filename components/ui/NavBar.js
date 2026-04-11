@@ -1,10 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LoginDialog from '@/components/auth/LogInModal';
 import SignupDialog from '@/components/auth/SignUpModal';
+import { useAuth } from '@/hooks/useAuth';
+import { getUserRoleLabel } from '@/lib/auth/roles';
+
+const getProfileInitials = (name = '') => {
+  const words = String(name).trim().split(/\s+/).filter(Boolean);
+
+  if (words.length === 0) {
+    return 'DH';
+  }
+
+  return words
+    .slice(0, 2)
+    .map((word) => word[0].toUpperCase())
+    .join('');
+};
 
 const NavBar = () => {
   const pathname = usePathname();
@@ -15,8 +30,41 @@ const NavBar = () => {
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
+
+  const displayName = user?.fullName || user?.firstName || 'My Profile';
+  const roleLabel = getUserRoleLabel(user?.role);
+  const profileInitials = getProfileInitials(displayName);
 
   const isActive = (path) => pathname === path;
+
+  useEffect(() => {
+    setIsProfileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!isProfileMenuOpen) {
+      return;
+    }
+
+    const handleOutsideClick = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isProfileMenuOpen]);
+
+  const handleLogout = () => {
+    logout();
+    setIsProfileMenuOpen(false);
+    setIsMobileMenuOpen(false);
+  };
 
   const menuData = [
     {
@@ -38,7 +86,7 @@ const NavBar = () => {
 
   return (
     <>
-      <nav className="bg-[#003580] text-white border-b border-blue-900 shadow-md sticky top-0 z-50 relative">
+      <nav className="bg-[#003580] text-white border-b border-blue-900 shadow-md sticky top-0 z-50">
         <div className="max-w-screen-2xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
 
           {/* LEFT SECTION: LOGO */}
@@ -72,7 +120,7 @@ const NavBar = () => {
                 </div>
 
                 {/* DESKTOP DROPDOWN BOX */}
-                <div className={`absolute top-full left-0 w-64 bg-white text-[#003580] rounded-xl shadow-2xl py-3 border border-gray-100 transition-all duration-200 z-[60] ${activeDropdown === menu.title ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                <div className={`absolute top-full left-0 w-64 bg-white text-[#003580] rounded-xl shadow-2xl py-3 border border-gray-100 transition-all duration-200 z-60 ${activeDropdown === menu.title ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                   {menu.items.map((item) => (
                     <Link
                       key={item}
@@ -93,12 +141,56 @@ const NavBar = () => {
               List your property
             </Link>
 
-            <button
-              onClick={() => setIsLoginOpen(true)}
-              className="text-sm font-bold border border-white/40 px-4 md:px-6 py-2 rounded-full hover:bg-white hover:text-[#003580] transition"
-            >
-              Sign in
-            </button>
+            {isLoading ? (
+              <div className="h-10 w-24 animate-pulse rounded-full bg-white/20" />
+            ) : isAuthenticated ? (
+              <div ref={profileMenuRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsProfileMenuOpen((prev) => !prev)}
+                  className="flex items-center gap-2 rounded-full border border-white/40 px-3 py-1.5 text-sm font-bold transition hover:bg-white hover:text-[#003580]"
+                >
+                  <span className="hidden max-w-32.5 truncate md:inline">{displayName}</span>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-xs font-extrabold">
+                    {profileInitials}
+                  </span>
+                </button>
+
+                <div
+                  className={`absolute right-0 top-full mt-2 w-64 rounded-xl border border-gray-100 bg-white text-[#003580] shadow-2xl transition-all duration-200 z-60 ${
+                    isProfileMenuOpen ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'
+                  }`}
+                >
+                  <div className="border-b border-gray-100 px-4 py-3">
+                    <p className="truncate text-sm font-semibold text-gray-900">{displayName}</p>
+                    <p className="mt-1 text-xs font-medium text-gray-500">{roleLabel}</p>
+                  </div>
+
+                  <Link
+                    href="/profile"
+                    onClick={() => setIsProfileMenuOpen(false)}
+                    className="block px-4 py-2.5 text-sm font-medium hover:bg-blue-50 transition-colors"
+                  >
+                    My Profile
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="block w-full px-4 py-2.5 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsLoginOpen(true)}
+                className="text-sm font-bold border border-white/40 px-4 md:px-6 py-2 rounded-full hover:bg-white hover:text-[#003580] transition"
+              >
+                Sign in
+              </button>
+            )}
 
             {/* MOBILE HAMBURGER BUTTON */}
             <button 
@@ -126,7 +218,7 @@ const NavBar = () => {
 
         {/* MOBILE MENU DROPDOWN */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 w-full bg-[#003580] border-t border-blue-800 shadow-xl pb-6 px-6 flex flex-col z-[60]">
+          <div className="lg:hidden absolute top-full left-0 w-full bg-[#003580] border-t border-blue-800 shadow-xl pb-6 px-6 flex flex-col z-60">
             <Link 
               href="/" 
               onClick={() => setIsMobileMenuOpen(false)}
@@ -161,6 +253,36 @@ const NavBar = () => {
             >
               List your property
             </Link>
+
+            {isAuthenticated ? (
+              <div className="mt-2 border-t border-blue-800/50 pt-4">
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block py-2 font-semibold text-lg hover:text-blue-200 transition"
+                >
+                  My Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="mt-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-semibold text-red-100 hover:bg-red-500/20 transition"
+                >
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsLoginOpen(true);
+                }}
+                className="mt-4 rounded-lg border border-white/40 px-3 py-2 text-sm font-bold hover:bg-white hover:text-[#003580] transition"
+              >
+                Sign in
+              </button>
+            )}
           </div>
         )}
       </nav>
