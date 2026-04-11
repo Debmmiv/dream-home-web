@@ -106,7 +106,7 @@ export function useAuth() {
 	);
 
 	const authenticateWithCredentials = useCallback(
-		async ({ email, password }) => {
+		async ({ email, password, fallbackUser = null }) => {
 			const response = await apiClient.post(LOGIN_ENDPOINT, {
 				data: {
 					username: email,
@@ -121,6 +121,10 @@ export function useAuth() {
 			const savedSession = storeTokens({
 				accessToken: response.access,
 				refreshToken: response.refresh,
+				fallbackUser: {
+					...(fallbackUser || {}),
+					email,
+				},
 			});
 
 			return savedSession?.user || null;
@@ -198,7 +202,12 @@ export function useAuth() {
 			}
 
 			try {
-				const loggedInUser = await authenticateWithCredentials(validation.data);
+				const loggedInUser = await authenticateWithCredentials({
+					...validation.data,
+					fallbackUser: {
+						email: validation.data.email,
+					},
+				});
 				setIsLoading(false);
 				return { success: true, user: loggedInUser };
 			} catch (requestError) {
@@ -235,6 +244,15 @@ export function useAuth() {
 				const loggedInUser = await authenticateWithCredentials({
 					email: validation.data.email,
 					password: validation.data.password,
+					fallbackUser: {
+						firstName: validation.data.first_name,
+						lastName: validation.data.last_name,
+						fullName: `${validation.data.first_name} ${validation.data.last_name}`.trim(),
+						role: validation.data.role,
+						email: validation.data.email,
+						telephoneNo: validation.data.telephone_no,
+						address: validation.data.address,
+					},
 				});
 
 				setIsLoading(false);
