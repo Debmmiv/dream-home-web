@@ -45,7 +45,10 @@ export default async function PropertyDetailPage({ params }) {
 
                 {/* Right: inquiry form */}
                 <div className="lg:w-80 shrink-0">
-                    <PropertyInquiryForm agent={{ name: "DreamHome Team", title: "Property Management" }} />
+                    <PropertyInquiryForm 
+                        agent={{ name: "DreamHome Team", title: "Property Management" }}
+                        propertyId={property.property_no || property.id}
+                    />
                 </div>
             </div>
 
