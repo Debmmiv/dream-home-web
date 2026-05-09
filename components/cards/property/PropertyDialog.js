@@ -95,7 +95,7 @@ export default function PropertyDialog({ isOpen, onClose, property }) {
 
             {/* Right: inquiry form */}
             <div className="lg:w-72 shrink-0">
-              <PropertyInquiryForm agent={property.agent} />
+              <PropertyInquiryForm agent={property.agent} propertyId={property.propertyId} />
             </div>
           </div>
 
